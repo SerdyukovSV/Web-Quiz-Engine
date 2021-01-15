@@ -33,12 +33,12 @@ public class QuizController {
     }
 
     @PostMapping(path = "/{id}/solve")
-    public Messages solveQuiz(@PathVariable Integer id,
+    public ResponseEntity<Messages> solveQuiz(@PathVariable Integer id,
                               @RequestBody Answer answer) throws ResourceNotFoundException {
         if (quizService.solveQuiz(id, answer)) {
-            return Messages.SUCCESS;
+            return new ResponseEntity<>(Messages.SUCCESS, HttpStatus.OK);
         }
-        return Messages.FAIL;
+        return new ResponseEntity<>(Messages.FAIL, HttpStatus.OK);
     }
 
     @GetMapping(path = "/completed")
