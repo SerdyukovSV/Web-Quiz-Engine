@@ -59,9 +59,9 @@ public class QuizController {
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<HttpStatus> deleteQuiz(@PathVariable Integer id) throws ResourceNotFoundException {
         if (quizService.deleteQuiz(id)) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
 }
