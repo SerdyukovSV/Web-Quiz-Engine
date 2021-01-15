@@ -29,10 +29,7 @@ public class QuizController {
 
     @PostMapping
     public ResponseEntity<QuizDto> createQuiz(@Valid @RequestBody QuizDto quizDto) {
-        return new ResponseEntity<>(
-                quizService.createQuiz(quizDto),
-                HttpStatus.CREATED
-        );
+        return new ResponseEntity<>(quizService.createQuiz(quizDto), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/{id}/solve")
@@ -50,9 +47,8 @@ public class QuizController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<QuizDto> getQuiz(
-            @PathVariable Integer id) throws ResourceNotFoundException {
-        return ResponseEntity.ok().body(quizService.getQuizById(id));
+    public ResponseEntity<QuizDto> getQuiz(@PathVariable Integer id) throws ResourceNotFoundException {
+        return new ResponseEntity<>(quizService.getQuizById(id), HttpStatus.OK);
     }
 
     @GetMapping
@@ -61,8 +57,7 @@ public class QuizController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<HttpStatus> deleteQuiz(
-            @PathVariable Integer id) throws ResourceNotFoundException {
+    public ResponseEntity<HttpStatus> deleteQuiz(@PathVariable Integer id) throws ResourceNotFoundException {
         if (quizService.deleteQuiz(id)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
