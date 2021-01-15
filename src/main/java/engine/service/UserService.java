@@ -27,35 +27,41 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        User user = usersRepository.findByEmail(email);
-        if (user == null) {
+        User userFromDb = usersRepository.findByEmail(email);
+
+        if (userFromDb == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return user;
+
+        return userFromDb;
     }
 
-    public boolean saveUser(UserDto userDto) {
-        User user = convertToEntity(userDto);
-        if (usersRepository.findByEmail(user.getEmail()) != null) {
+    public boolean createUser(UserDto userDto) {
+        User userEntity = convertToEntity(userDto);
+
+        if (usersRepository.findByEmail(userEntity.getEmail()) != null) {
             return false;
         }
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        usersRepository.save(user);
-        userDto.setId(user.getId());
+
+        userEntity.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
+        usersRepository.save(userEntity);
+        userDto.setId(userEntity.getId());
+
         return true;
     }
 
     public List<CompletedQuiz> completedQuizzes() {
-        User user = getCurrentUser();
-        return usersRepository.findByEmail(user.getEmail()).getCompletedQuizzes();
+        String emailUser = getCurrentUser().getEmail();
+
+        return usersRepository.findByEmail(emailUser).getCompletedQuizzes();
     }
 
     public User getCurrentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public UserDto convertToDto(User user) {
-        return modelMapper.map(user, UserDto.class);
+    public UserDto convertToDto(User userEntity) {
+        return modelMapper.map(userEntity, UserDto.class);
     }
 
     public User convertToEntity(UserDto userDto) {

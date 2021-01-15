@@ -40,6 +40,7 @@ public class QuizService {
 
     public boolean solveQuiz(Integer id, Answer answer) throws ResourceNotFoundException {
         Quiz quiz = quizRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
         if (Arrays.equals(answer.getAnswers(), quiz.getAnswer())) {
             CompletedQuiz completedQuiz = new CompletedQuiz();
             completedRepository.save(completedQuiz);
