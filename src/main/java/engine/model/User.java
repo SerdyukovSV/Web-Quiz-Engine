@@ -1,42 +1,45 @@
 package engine.model;
 
-import jdk.jfr.ContentType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
-@Table(name = "user")
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Email(regexp = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
     private String email;
-
-    @Size(min = 5)
     private String password;
 
+    @OneToMany(
+            fetch = FetchType.EAGER, cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "user_id")
+    private List<CompletedQuiz> completedQuizzes;
+
     public User() {
+        /**/
     }
 
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public List<CompletedQuiz> getCompletedQuizzes() {
+        return completedQuizzes;
     }
 
-    public Long getId() {
+    public void setCompletedQuizzes(List<CompletedQuiz> completedQuizzes) {
+        this.completedQuizzes = completedQuizzes;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -50,7 +53,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

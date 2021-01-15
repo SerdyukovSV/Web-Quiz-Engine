@@ -1,8 +1,7 @@
 package engine.api;
 
+import engine.dto.UserDto;
 import engine.exception.UserAlreadyExistException;
-import engine.model.User;
-import engine.service.AuthenticationUsers;
 import engine.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,20 +19,17 @@ public class UsersController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    AuthenticationUsers authUser;
-
     @PostMapping(path = "/api/register")
-    public ResponseEntity addUser(@Valid @RequestBody User user) throws UserAlreadyExistException {
-        if (!userService.saveUser(user)) {
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+        if (!userService.saveUser(userDto)) {
             throw new UserAlreadyExistException();
         }
-        return new ResponseEntity(user, HttpStatus.OK);
+        return new ResponseEntity<>(userDto, HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/api/user")
-    public String currentUserName() {
-        User user = authUser.getAuthenticationUsers();
-        return "email: " + user.getEmail() + "\nuserID: " + user.getId();
+    @GetMapping(path = "/api/authentic")
+    public ResponseEntity<UserDto> authenticateUser() {
+        UserDto user = userService.convertToDto(userService.getCurrentUser());
+        return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 }

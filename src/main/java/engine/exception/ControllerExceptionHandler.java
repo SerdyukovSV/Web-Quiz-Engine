@@ -14,9 +14,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-    private static final String NOT_FOUND_MESSAGE = "Information not found for number";
-
-    @ExceptionHandler({IndexOutOfBoundsException.class, ResourceNotFoundException.class, UsernameNotFoundException.class})
+    @ExceptionHandler({IndexOutOfBoundsException.class,
+            ResourceNotFoundException.class, UsernameNotFoundException.class})
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public Map<String, String> handleIndexException(Exception e) {
         HashMap<String, String> response = new HashMap<>();
@@ -29,9 +28,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidException(MethodArgumentNotValidException ex) {
         HashMap<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(e -> {
-            errors.put(((FieldError) e).getField(), e.getDefaultMessage());
-        });
+        ex.getBindingResult().getAllErrors().forEach(e -> errors.put(((FieldError) e).getField(), e.getDefaultMessage()));
         return errors;
     }
 
