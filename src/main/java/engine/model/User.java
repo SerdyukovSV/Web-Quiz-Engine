@@ -27,6 +27,13 @@ public class User implements UserDetails {
         /**/
     }
 
+    public User(Integer id, String email, String password, List<CompletedQuiz> completedQuizzes) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.completedQuizzes = completedQuizzes;
+    }
+
     public List<CompletedQuiz> getCompletedQuizzes() {
         return completedQuizzes;
     }

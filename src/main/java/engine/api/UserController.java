@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/api/")
+@RequestMapping(path = "api/")
 public class UserController {
 
     @Autowired
@@ -19,7 +19,7 @@ public class UserController {
 
     @PostMapping(path = "register")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-        if (!userService.createUser(userDto)) {
+        if (!userService.create(userDto)) {
             throw new UserAlreadyExistException();
         }
         return new ResponseEntity<>(userDto, HttpStatus.CREATED);

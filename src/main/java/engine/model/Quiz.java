@@ -11,7 +11,9 @@ import javax.persistence.*;
 public class Quiz {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.IDENTITY
+    )
     private Integer id;
     private String title;
     private String text;
@@ -23,8 +25,10 @@ public class Quiz {
     private Integer[] answer;
 
     @ManyToOne
-    @JoinTable(name = "QUIZ_USER",
+    @JoinTable(
+            name = "QUIZ_USER",
             joinColumns = @JoinColumn(name = "QUIZ_FK"),
-            inverseJoinColumns = @JoinColumn(name = "USER_FK"))
+            inverseJoinColumns = @JoinColumn(name = "USER_FK")
+    )
     private User owner;
 }

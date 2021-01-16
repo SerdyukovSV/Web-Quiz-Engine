@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public enum Messages {
     SUCCESS(true, "Congratulations, you're right!"),
     FAIL(false, "Wrong answer! Please, try again.");
+
     private final boolean success;
     private final String feedback;
 

@@ -36,28 +36,33 @@ public class UserService implements UserDetailsService {
         return userFromDb;
     }
 
-    public boolean createUser(UserDto userDto) {
-        User userEntity = convertToEntity(userDto);
-
-        if (usersRepository.findByEmail(userEntity.getEmail()) != null) {
+    public boolean save(User user) {
+        if (usersRepository.findByEmail(user.getEmail()) != null) {
             return false;
         }
-
-        userEntity.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
-        usersRepository.save(userEntity);
-        userDto.setId(userEntity.getId());
-
+        usersRepository.save(user);
         return true;
     }
 
-    public List<CompletedQuiz> completedQuizzes() {
-        String emailUser = getCurrentUser().getEmail();
+    public boolean create(UserDto userDto){
+        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
-        return usersRepository.findByEmail(emailUser).getCompletedQuizzes();
+        return save(convertToEntity(userDto));
+    }
+
+    public User getByEmail(String email) {
+        return usersRepository.findByEmail(email);
     }
 
     public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (User) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+    }
+
+    public List<CompletedQuiz> completedQuizzes() {
+        return usersRepository.findByEmail(getCurrentUser().getEmail())
+                .getCompletedQuizzes();
     }
 
     public UserDto convertToDto(User userEntity) {
