@@ -1,7 +1,6 @@
 package engine.service;
 
 import engine.dto.UserDto;
-import engine.model.CompletedQuiz;
 import engine.model.User;
 import engine.repository.UsersRepository;
 import org.modelmapper.ModelMapper;
@@ -13,8 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class UserService implements UserDetailsService {
 
@@ -23,7 +20,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UsersRepository usersRepository;
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) {
@@ -36,40 +33,30 @@ public class UserService implements UserDetailsService {
         return userFromDb;
     }
 
-    public boolean save(User user) {
+    public boolean createUser(UserDto userDto){
+        User user = modelMapper.map(userDto, User.class);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (usersRepository.findByEmail(user.getEmail()) != null) {
             return false;
         }
-        usersRepository.save(user);
-        return true;
+        User save = usersRepository.save(user);
+        return save.getId() != null;
     }
 
-    public boolean create(UserDto userDto){
-        userDto.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+    public boolean updateUser(User user) {
+        User save = usersRepository.save(user);
 
-        return save(convertToEntity(userDto));
+        return !save.equals(user);
     }
 
-    public User getByEmail(String email) {
-        return usersRepository.findByEmail(email);
+    public UserDto getByEmail(String email) {
+        User user = usersRepository.findByEmail(email);
+
+        return modelMapper.map(user, UserDto.class);
     }
 
     public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-    }
-
-    public List<CompletedQuiz> completedQuizzes() {
-        return usersRepository.findByEmail(getCurrentUser().getEmail())
-                .getCompletedQuizzes();
-    }
-
-    public UserDto convertToDto(User userEntity) {
-        return modelMapper.map(userEntity, UserDto.class);
-    }
-
-    public User convertToEntity(UserDto userDto) {
-        return modelMapper.map(userDto, User.class);
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

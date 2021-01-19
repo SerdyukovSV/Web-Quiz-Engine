@@ -1,13 +1,15 @@
 package engine.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import org.hibernate.annotations.SortComparator;
+import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+@Data
 @Entity
-@Getter @Setter @NoArgsConstructor
 public class Quiz {
 
     @Id
@@ -22,7 +24,8 @@ public class Quiz {
     private String[] options;
     @ElementCollection
     @OrderColumn(name = "ID")
-    private Integer[] answer;
+    @SortNatural
+    private SortedSet<Integer> answers;
 
     @ManyToOne
     @JoinTable(

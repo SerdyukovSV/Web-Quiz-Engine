@@ -2,13 +2,12 @@ package engine.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import engine.model.Answer;
 import lombok.Data;
-import org.springframework.objenesis.instantiator.android.AndroidSerializationInstantiator;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.SortedSet;
 
 @Data
 public class QuizDto {
@@ -21,15 +20,15 @@ public class QuizDto {
     @NotNull(message = "Options is mandatory")
     @Size(min = 2, message = "Must be greater than or equal to 2")
     private String[] options;
-    private Integer[] answer;
+    private SortedSet<Integer> answers;
 
     @JsonIgnore
-    public Integer[] getAnswer() {
-        return answer;
+    public SortedSet<Integer> getAnswers() {
+        return answers;
     }
 
     @JsonSetter
-    public void setAnswer(Integer[] answer) {
-        this.answer = answer;
+    public void setAnswers(SortedSet<Integer> answers) {
+        this.answers = answers;
     }
 }

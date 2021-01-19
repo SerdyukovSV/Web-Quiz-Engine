@@ -3,82 +3,54 @@ package engine.service;
 import engine.dto.UserDto;
 import engine.model.User;
 import engine.repository.UsersRepository;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-class UserServiceTest {
+import static org.mockito.ArgumentMatchers.anyString;
 
-//    @TestConfiguration
-//    static class UserServiceTestContextConfiguration {
-//        @Bean
-//        public UserService userService() {
-//            return new UserService();
-//        }
-//    }
+//@RunWith(SpringRunner.class)
+@SpringBootTest(classes = UserService.class)
+class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
     @MockBean
     private UsersRepository usersRepository;
+
     @MockBean
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private ModelMapper modelMapper;
 
-    @Before
-    public void setUp(){
-        User user = new User(1, "test@mail.com", "password", null);
-
-        Mockito.when(usersRepository.findByEmail(user.getEmail())).thenReturn(user);
-    }
+    @MockBean
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Test
-    public void create() {
-//        UserDto userDto = new UserDto(1, "test@mail.com", "password");
-//        User user = new User(1, "test@mail.com", "password", null);
+    void createUser() {
 
-//        Mockito.when(usersRepository.findByEmail("test@mail.com"))
-//                .thenReturn(user);
+        UserDto userDto = new UserDto();
+        User entity = new User();
+        Mockito.when(modelMapper.map(userDto, User.class)).thenReturn(entity);
+        Mockito.when(usersRepository.findByEmail(anyString())).thenReturn(null);
+        User saved = new User();
+        saved.setId(1);
+        Mockito.when(usersRepository.save(entity)).thenReturn(saved);
+        boolean actual = userService.createUser(userDto);
 
-//        Assert.assertTrue(userService.createUser(userDto));
-//        User userFromDb = usersRepository.findByEmail("test@mail.com");
-//        Assert.assertNotNull(userFromDb);
-//        Assert.assertEquals();
-
-        String email = "test@mail.com";
-        User found = userService.getByEmail(email);
-
-        Assert.assertThat(found.getEmail(), Matchers.equalTo(email));
-
-
-
+        Assert.assertTrue(actual);
     }
 
 //    @Test
-//    void completedQuizzes() {
+//    void getByEmail() {
 //    }
-//
-//    @Test
-//    void getCurrentUser() {
-//    }
-//
-//    @Test
-//    void convertToDto() {
-//    }
-//
-//    @Test
-//    void convertToEntity() {
-//    }
-
 }

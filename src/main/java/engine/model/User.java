@@ -1,5 +1,6 @@
 package engine.model;
 
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Data
 @Entity
 public class User implements UserDetails {
 
@@ -17,46 +19,9 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    @OneToMany(
-            fetch = FetchType.EAGER, cascade = CascadeType.ALL
-    )
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<CompletedQuiz> completedQuizzes;
-
-    public User() {
-        /**/
-    }
-
-    public User(Integer id, String email, String password, List<CompletedQuiz> completedQuizzes) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.completedQuizzes = completedQuizzes;
-    }
-
-    public List<CompletedQuiz> getCompletedQuizzes() {
-        return completedQuizzes;
-    }
-
-    public void setCompletedQuizzes(List<CompletedQuiz> completedQuizzes) {
-        this.completedQuizzes = completedQuizzes;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

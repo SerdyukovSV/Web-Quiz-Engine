@@ -1,9 +1,10 @@
 package engine.model;
 
-import lombok.*;
+import lombok.Data;
 
-@Setter @Getter
-@NoArgsConstructor
+import java.util.SortedSet;
+
+@Data
 public class Answer {
-    private Integer[] answers;
+    private SortedSet<Integer> answers;
 }

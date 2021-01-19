@@ -6,6 +6,7 @@ import engine.model.Answer;
 import engine.model.CompletedQuiz;
 import engine.model.Messages;
 import engine.model.Quiz;
+import engine.service.CompletedQuizService;
 import engine.service.QuizService;
 import engine.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,11 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "api/quizzes/")
+@RequestMapping(path = "api/quizzes")
 public class QuizController {
 
+    @Autowired
+    private CompletedQuizService completedService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -32,9 +35,9 @@ public class QuizController {
         return new ResponseEntity<>(quizService.createQuiz(quizDto), HttpStatus.CREATED);
     }
 
-    @PostMapping(path = "{id}/solve")
-    public ResponseEntity<Messages> solveQuiz(@PathVariable Integer id,
-                              @RequestBody Answer answer) throws ResourceNotFoundException {
+    @PostMapping(path = "/{id}/solve")
+    public ResponseEntity<Messages> solveQuiz(@PathVariable Integer id, @RequestBody Answer answer)
+            throws ResourceNotFoundException {
         if (quizService.solveQuiz(id, answer)) {
             return new ResponseEntity<>(Messages.SUCCESS, HttpStatus.OK);
         }
@@ -43,10 +46,10 @@ public class QuizController {
 
     @GetMapping(path = "completed")
     public List<CompletedQuiz> getCompletedQuizzes() {
-        return userService.completedQuizzes();
+        return completedService.getCompletedQuizzes();
     }
 
-    @GetMapping(path = "{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<QuizDto> getQuiz(@PathVariable Integer id) throws ResourceNotFoundException {
         return new ResponseEntity<>(quizService.getQuizById(id), HttpStatus.OK);
     }
@@ -56,7 +59,7 @@ public class QuizController {
         return quizService.getAllQuizzes(page);
     }
 
-    @DeleteMapping(path = "{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<HttpStatus> deleteQuiz(@PathVariable Integer id) throws ResourceNotFoundException {
         if (quizService.deleteQuiz(id)) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
