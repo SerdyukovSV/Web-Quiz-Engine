@@ -1,7 +1,7 @@
 package engine.api;
 
 import engine.dto.UserDto;
-import engine.exception.UserAlreadyExistException;
+import engine.repository.UsersRepository;
 import engine.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -19,20 +19,21 @@ public class UserController {
 
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UsersRepository usersRepository;
+
     @PostMapping(path = "register")
-    public ResponseEntity<UserDto> registrationUser(@Valid @RequestBody UserDto userDto) {
-        if (!userService.createUser(userDto)) {
-            throw new UserAlreadyExistException();
-        }
-        return new ResponseEntity<>(userService.getByEmail(userDto.getEmail()), HttpStatus.CREATED);
+    public ResponseEntity<UserDto> registration(@Valid @RequestBody UserDto userDto) {
+        return new ResponseEntity<>(userService.create(userDto), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "authentic")
-    public ResponseEntity<UserDto> authenticationUser() {
-        UserDto userDto = modelMapper.map(userService.getCurrentUser(), UserDto.class);
+    public ResponseEntity<UserDto> authentication() {
+        UserDto userDto = userService.getCurrentUser();
 
         return new ResponseEntity<>(userDto, HttpStatus.ACCEPTED);
     }

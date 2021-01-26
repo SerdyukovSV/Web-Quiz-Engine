@@ -7,7 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.SortedSet;
+import java.util.List;
 
 @Data
 public class QuizDto {
@@ -19,16 +19,18 @@ public class QuizDto {
     private String text;
     @NotNull(message = "Options is mandatory")
     @Size(min = 2, message = "Must be greater than or equal to 2")
-    private String[] options;
-    private SortedSet<Integer> answers;
+    private List<String> options;
+    private List<Integer> answers;
+    @JsonIgnore
+    private UserDto owner;
 
     @JsonIgnore
-    public SortedSet<Integer> getAnswers() {
+    public List<Integer> getAnswers() {
         return answers;
     }
 
     @JsonSetter
-    public void setAnswers(SortedSet<Integer> answers) {
+    public void setAnswers(List<Integer> answers) {
         this.answers = answers;
     }
 }

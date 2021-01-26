@@ -1,13 +1,17 @@
 package engine.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Data
 @Entity
@@ -18,10 +22,6 @@ public class User implements UserDetails {
     private Integer id;
     private String email;
     private String password;
-
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private List<CompletedQuiz> completedQuizzes;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

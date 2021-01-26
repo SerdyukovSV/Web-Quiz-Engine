@@ -1,21 +1,20 @@
 package engine.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-@Entity
 @Data
-@NoArgsConstructor
-public class CompletedQuiz implements Serializable {
+@Entity
+public class CompletedQuiz {
 
     @Id
-    @JsonIgnore
     @GeneratedValue
     private Integer id;
     private Integer quizId;
-    private final String completedAt = LocalDateTime.now().toString();
+    private Integer userId;
+    private String completedAt = LocalDateTime.now().toString();
 }

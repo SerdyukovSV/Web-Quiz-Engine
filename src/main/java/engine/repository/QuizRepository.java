@@ -8,5 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Integer> {
-    Optional<Quiz> findByIdAndOwnerId(Integer id, Integer userId);
+
+    Quiz findByTitle(String title);
 }

@@ -33,10 +33,10 @@ public class ControllerExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UserAlreadyExistException.class)
-    public Map<String, String> handleRegistrationException(UserAlreadyExistException ex) {
+    @ExceptionHandler({UserAlreadyExistException.class, QuizAlreadyExistException.class})
+    public Map<String, String> handleRegistrationException(RuntimeException ex) {
         HashMap<String, String> response = new HashMap<>();
-        response.put("message", "email is already taken by another user");
+        response.put("message", ex.getMessage());
         response.put("error", ex.getClass().getSimpleName());
         return response;
     }

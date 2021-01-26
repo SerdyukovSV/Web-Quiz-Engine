@@ -1,62 +1,60 @@
 package engine.service;
 
 import engine.dto.UserDto;
+import engine.exception.UserAlreadyExistException;
 import engine.model.User;
 import engine.repository.UsersRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private UsersRepository usersRepository;
+
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) {
-        User userFromDb = usersRepository.findByEmail(email);
+    public UserDto create(UserDto userDto) {
+        String email = userDto.getEmail();
 
-        if (userFromDb == null) {
-            throw new UsernameNotFoundException("User not found");
+        if (usersRepository.findByEmail(email) != null) {
+            throw new UserAlreadyExistException("User " + email + " already exists");
         }
-
-        return userFromDb;
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User save = usersRepository.save(modelMapper.map(userDto, User.class));
+        return modelMapper.map(save, UserDto.class);
     }
 
-    public boolean createUser(UserDto userDto){
-        User user = modelMapper.map(userDto, User.class);
+    public UserDto update(UserDto userDto) {
+        String email = userDto.getEmail();
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (usersRepository.findByEmail(user.getEmail()) != null) {
-            return false;
+        if (usersRepository.findByEmail(email) == null) {
+            throw new UsernameNotFoundException("User " + email + " not found");
         }
-        User save = usersRepository.save(user);
-        return save.getId() != null;
-    }
-
-    public boolean updateUser(User user) {
-        User save = usersRepository.save(user);
-
-        return !save.equals(user);
+        User save = usersRepository.save(modelMapper.map(userDto, User.class));
+        return modelMapper.map(save, UserDto.class);
     }
 
     public UserDto getByEmail(String email) {
         User user = usersRepository.findByEmail(email);
 
+        if (user == null) {
+            throw new UsernameNotFoundException("User " + email + " not found");
+        }
         return modelMapper.map(user, UserDto.class);
     }
 
-    public User getCurrentUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public UserDto getCurrentUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return modelMapper.map(user, UserDto.class);
     }
 }

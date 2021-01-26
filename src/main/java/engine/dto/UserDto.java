@@ -3,18 +3,15 @@ package engine.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-@Setter @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class UserDto implements Serializable {
     private Integer id;
     @NotBlank(message = "Email is mandatory")
