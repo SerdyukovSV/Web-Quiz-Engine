@@ -1,12 +1,11 @@
 package engine.api;
 
+import engine.dto.AnswerDto;
 import engine.dto.CompletedQuizDto;
 import engine.dto.QuizDto;
-import engine.dto.AnswerDto;
 import engine.model.Messages;
 import engine.service.CompletedQuizService;
 import engine.service.QuizService;
-import engine.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,12 +20,14 @@ import java.util.List;
 @RequestMapping(path = "api/quizzes")
 public class QuizController {
 
+    private final CompletedQuizService completedService;
+    private final QuizService quizService;
+
     @Autowired
-    private CompletedQuizService completedService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private QuizService quizService;
+    public QuizController(CompletedQuizService completedService, QuizService quizService) {
+        this.completedService = completedService;
+        this.quizService = quizService;
+    }
 
     @PostMapping
     public ResponseEntity<QuizDto> createQuiz(@Valid @RequestBody QuizDto quizDto) {

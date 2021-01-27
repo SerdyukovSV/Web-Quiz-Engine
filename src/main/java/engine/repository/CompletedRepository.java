@@ -10,5 +10,4 @@ import java.util.List;
 public interface CompletedRepository extends JpaRepository<CompletedQuiz, Integer> {
 
     List<CompletedQuiz> findAllByUserIdOrderByCompletedAtDesc(Integer userId);
-
 }

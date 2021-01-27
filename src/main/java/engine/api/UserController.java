@@ -1,10 +1,8 @@
 package engine.api;
 
 import engine.dto.UserDto;
-import engine.repository.UsersRepository;
 import engine.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +15,12 @@ import javax.validation.Valid;
 @RequestMapping(path = "api/")
 public class UserController {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final UserService userService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UsersRepository usersRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(path = "register")
     public ResponseEntity<UserDto> registration(@Valid @RequestBody UserDto userDto) {
