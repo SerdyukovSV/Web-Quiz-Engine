@@ -2,8 +2,10 @@ package engine.service;
 
 import engine.dto.QuizDto;
 import engine.exception.QuizAlreadyExistException;
+import engine.exception.ResourceForbiddenException;
 import engine.exception.ResourceNotFoundException;
 import engine.dto.AnswerDto;
+import engine.model.CompletedQuiz;
 import engine.model.Quiz;
 import engine.repository.QuizRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -55,9 +57,8 @@ public class QuizService {
         List<Integer> correctAnswer = quiz.getAnswers();
         List<Integer> verifyAnswer = answerDto.getAnswers();
 
-        if (correctAnswer.containsAll(verifyAnswer) && verifyAnswer.containsAll(correctAnswer)
-                /*&& (correctAnswer.size() == verifyAnswer.size())*/) {
-            completedService.addCompletedQuiz(quizId);
+        if (correctAnswer.containsAll(verifyAnswer) && verifyAnswer.containsAll(correctAnswer)) {
+            completedService.add(new CompletedQuiz(), quizId);
             return true;
         }
         return false;

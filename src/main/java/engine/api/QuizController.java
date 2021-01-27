@@ -43,7 +43,7 @@ public class QuizController {
 
     @GetMapping(path = "completed")
     public List<CompletedQuizDto> getCompletedQuizzes() {
-        return completedService.getCompletedQuizzes();
+        return completedService.getAll();
     }
 
     @GetMapping(path = "/{id}")

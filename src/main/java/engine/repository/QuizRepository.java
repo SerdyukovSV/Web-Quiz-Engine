@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface QuizRepository extends JpaRepository<Quiz, Integer> {
 
     Quiz findByTitle(String title);
+
+//    Quiz findByIdAndByOwnerId(Integer id, Integer ownerId);
 }

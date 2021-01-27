@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface CompletedRepository extends JpaRepository<CompletedQuiz, Integer> {
 
-    List<CompletedQuiz> findByUserIdOrderByCompletedAtDesc(Integer userId);
+    List<CompletedQuiz> findAllByUserIdOrderByCompletedAtDesc(Integer userId);
 
 }

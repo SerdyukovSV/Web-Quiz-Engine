@@ -24,8 +24,7 @@ public class CompletedQuizService {
         this.modelMapper = modelMapper;
     }
 
-    public void addCompletedQuiz(Integer quizId) {
-        CompletedQuiz completedQuiz = new CompletedQuiz();
+    public void add(CompletedQuiz completedQuiz, Integer quizId) {
         Integer userId = userService.getCurrentUser().getId();
 
         completedQuiz.setUserId(userId);
@@ -33,10 +32,10 @@ public class CompletedQuizService {
         repository.save(completedQuiz);
     }
 
-    public List<CompletedQuizDto> getCompletedQuizzes() {
+    public List<CompletedQuizDto> getAll() {
         Integer userId = userService.getCurrentUser().getId();
 
-        return repository.findByUserIdOrderByCompletedAtDesc(userId)
+        return repository.findAllByUserIdOrderByCompletedAtDesc(userId)
                 .stream().map(e -> modelMapper.map(e, CompletedQuizDto.class))
                 .collect(Collectors.toList());
     }
