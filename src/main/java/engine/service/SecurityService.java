@@ -1,5 +1,6 @@
 package engine.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class SecurityService extends WebSecurityConfigurerAdapter {
@@ -24,6 +26,7 @@ public class SecurityService extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+        log.debug("Started configure http security");
         httpSecurity
                 .csrf().disable().httpBasic()
                 .and()
@@ -39,6 +42,7 @@ public class SecurityService extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
+        log.debug("Started configure web security");
         webSecurity
                 .ignoring()
                 .antMatchers("/h2-console/**");
@@ -47,6 +51,7 @@ public class SecurityService extends WebSecurityConfigurerAdapter {
     @Override
     @Autowired
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        log.debug("Started configure authentication");
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
     }
 }

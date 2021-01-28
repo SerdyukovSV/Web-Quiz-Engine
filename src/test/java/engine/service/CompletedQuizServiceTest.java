@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
@@ -54,6 +55,7 @@ class CompletedQuizServiceTest {
         userDto.setId(1);
         when(userService.getCurrentUser()).thenReturn(userDto);
         when(repository.findAllByUserIdOrderByCompletedAtDesc(1)).thenReturn(list);
+
         when(modelMapper.map(completedQuiz1, CompletedQuizDto.class))
                 .thenReturn(new CompletedQuizDto());
         when(modelMapper.map(completedQuiz2, CompletedQuizDto.class))
@@ -62,6 +64,6 @@ class CompletedQuizServiceTest {
         List<CompletedQuizDto> listDto = service.getAll();
 
         assertEquals(list.size(), listDto.size());
-
+//        assertThat()
     }
 }

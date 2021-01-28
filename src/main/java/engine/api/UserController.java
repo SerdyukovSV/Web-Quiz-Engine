@@ -24,11 +24,13 @@ public class UserController {
 
     @PostMapping(path = "register")
     public ResponseEntity<UserDto> registration(@Valid @RequestBody UserDto userDto) {
+        log.debug("Method POST 'registration' started with arg {}", userDto.getEmail());
         return new ResponseEntity<>(userService.create(userDto), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "authentic")
     public ResponseEntity<UserDto> authentication() {
+        log.debug("Method GET 'authentication' started");
         UserDto userDto = userService.getCurrentUser();
 
         return new ResponseEntity<>(userDto, HttpStatus.ACCEPTED);

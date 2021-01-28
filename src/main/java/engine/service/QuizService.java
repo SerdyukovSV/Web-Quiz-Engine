@@ -1,10 +1,9 @@
 package engine.service;
 
+import engine.dto.AnswerDto;
 import engine.dto.QuizDto;
 import engine.exception.QuizAlreadyExistException;
-import engine.exception.ResourceForbiddenException;
 import engine.exception.ResourceNotFoundException;
-import engine.dto.AnswerDto;
 import engine.model.CompletedQuiz;
 import engine.model.Quiz;
 import engine.repository.QuizRepository;
@@ -22,35 +21,44 @@ import java.util.stream.Collectors;
 @Service
 public class QuizService {
 
-    private final CompletedQuizService completedService;
-    private final QuizRepository quizRepository;
-    private final UserService userService;
-    private final ModelMapper modelMapper;
-
     @Autowired
-    public QuizService(CompletedQuizService completedService, QuizRepository quizRepository, UserService userService, ModelMapper modelMapper) {
-        this.completedService = completedService;
-        this.quizRepository = quizRepository;
-        this.userService = userService;
-        this.modelMapper = modelMapper;
-    }
+    private CompletedQuizService completedService;
+    @Autowired
+    private QuizRepository quizRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ModelMapper modelMapper;
+
+//    @Autowired
+//    public QuizService(CompletedQuizService completedService, QuizRepository quizRepository, UserService userService, ModelMapper modelMapper) {
+//        this.completedService = completedService;
+//        this.quizRepository = quizRepository;
+//        this.userService = userService;
+//        this.modelMapper = modelMapper;
+//    }
 
     public QuizDto create(QuizDto quizDto) {
+        log.debug("Method 'create' started with arg {}", quizDto);
         String title = quizDto.getTitle();
 
         if (quizRepository.findByTitle(title) != null) {
-            throw new QuizAlreadyExistException("Quiz " + title + " already exists");
+            String message = "Quiz " + title + " already exists";
+            log.error(message);
+            throw new QuizAlreadyExistException(message);
         }
         quizDto.setOwner(userService.getCurrentUser());
-        Quiz quiz = modelMapper.map(quizDto, Quiz.class);
-        Quiz save = quizRepository.save(quiz);
-        return modelMapper.map(save, QuizDto.class);
+        Quiz entity = modelMapper.map(quizDto, Quiz.class);
+        Quiz save = quizRepository.save(entity);
+        QuizDto quiz = modelMapper.map(save, QuizDto.class);
+        log.debug("Created successfully {}", quiz);
+        return quiz;
     }
 
     public boolean solve(Integer quizId, AnswerDto answerDto) {
-        log.debug("start method solve whit parameters quizId {}, answerDto {}", quizId, answerDto);
+        log.debug("Method 'solve' started with args {}, {}", quizId, answerDto);
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(() -> {
-            String message = "Quiz" + quizId + " not found";
+            String message = "Quiz " + quizId + " not found";
             log.error(message);
             throw new ResourceNotFoundException(message);
         });
@@ -59,17 +67,27 @@ public class QuizService {
 
         if (correctAnswer.containsAll(verifyAnswer) && verifyAnswer.containsAll(correctAnswer)) {
             completedService.add(new CompletedQuiz(), quizId);
+            log.debug("Successfully completed quiz '{}'", quiz.getTitle());
             return true;
         }
+        log.debug("Failed quiz '{}'", quiz.getTitle());
         return false;
     }
 
     public QuizDto getById(Integer id) {
-        Quiz quiz = quizRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        return modelMapper.map(quiz, QuizDto.class);
+        log.debug("Method 'getById' started with arg {}", id);
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> {
+            String message = "Quiz " + id + "not found";
+            log.error(message);
+            throw new ResourceNotFoundException(message);
+        });
+        QuizDto quizDto = modelMapper.map(quiz, QuizDto.class);
+        log.debug("Quiz {} found successfully in DB", id);
+        return quizDto;
     }
 
     public List<QuizDto> getAll(Integer pageNo) {
+        log.debug("Method 'getAll' started with arg {}", pageNo);
         Page<Quiz> quizzes = quizRepository.findAll(PageRequest.of(pageNo, 10));
 
         return quizzes.stream().map(e -> modelMapper.map(e, QuizDto.class))
@@ -77,13 +95,20 @@ public class QuizService {
     }
 
     public boolean delete(Integer id) {
-        Quiz quiz = quizRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        log.debug("Method 'delete' started with arg {}", id);
+        Quiz quiz = quizRepository.findById(id).orElseThrow(() -> {
+            String message = "Quiz " + id + "not found";
+            log.error(message);
+            throw new ResourceNotFoundException(message);
+        });
         Integer userId = userService.getCurrentUser().getId();
 
         if (quiz.getOwner().getId().equals(userId)) {
             quizRepository.delete(quiz);
+            log.debug("Quiz {} deleted successfully from DB", id);
             return true;
         }
+        log.debug("Failed to delete quiz {}", id);
         return false;
     }
 }
