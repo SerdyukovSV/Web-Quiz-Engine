@@ -22,13 +22,6 @@ public class CompletedQuizService {
     @Autowired
     private ModelMapper modelMapper;
 
-//    @Autowired
-//    public CompletedQuizService(UserService userService, CompletedRepository repository, ModelMapper modelMapper) {
-//        this.userService = userService;
-//        this.repository = repository;
-//        this.modelMapper = modelMapper;
-//    }
-
     public void add(CompletedQuiz completedQuiz, Integer quizId) {
         log.debug("Method 'add' started with arg {}, {}", completedQuiz, quizId);
         Integer userId = userService.getCurrentUser().getId();

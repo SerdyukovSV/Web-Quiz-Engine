@@ -30,14 +30,6 @@ public class QuizService {
     @Autowired
     private ModelMapper modelMapper;
 
-//    @Autowired
-//    public QuizService(CompletedQuizService completedService, QuizRepository quizRepository, UserService userService, ModelMapper modelMapper) {
-//        this.completedService = completedService;
-//        this.quizRepository = quizRepository;
-//        this.userService = userService;
-//        this.modelMapper = modelMapper;
-//    }
-
     public QuizDto create(QuizDto quizDto) {
         log.debug("Method 'create' started with arg {}", quizDto);
         String title = quizDto.getTitle();

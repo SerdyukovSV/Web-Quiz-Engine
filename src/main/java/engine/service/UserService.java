@@ -23,13 +23,6 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    public UserService(ModelMapper modelMapper, UsersRepository usersRepository, BCryptPasswordEncoder passwordEncoder) {
-//        this.modelMapper = modelMapper;
-//        this.usersRepository = usersRepository;
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
     public UserDto create(UserDto userDto) {
         log.debug("Method 'create' started with arg {}", userDto.getEmail());
         String email = userDto.getEmail();

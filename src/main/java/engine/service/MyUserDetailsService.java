@@ -18,12 +18,6 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     private ModelMapper modelMapper;
 
-//    @Autowired
-//    public MyUserDetailsService(UserService userService, ModelMapper modelMapper) {
-//        this.userService = userService;
-//        this.modelMapper = modelMapper;
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String email) {
         log.debug("Method 'loadUserByUsername' started with arg {}", email);
